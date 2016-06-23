@@ -1,7 +1,9 @@
 import requests
 from pprint import pprint
 from bs4 import BeautifulSoup
+from time import time
 
+start_time = time()
 s = requests.Session()
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
@@ -37,8 +39,8 @@ soup = BeautifulSoup(resp.text, 'html.parser')
 
 timeslots = soup.findAll("input", {"class":"slotcheckbox"})
 
-time_start = 1900   #filter results based on start time
-time_end = 2200     #filter results based on end time
+time_start = 900   #filter results based on start time- must be integer- without leading 0
+time_end = 1200     #filter results based on end time- must be integer- without leading 0
 check_list = []
 a=time_start
 while a<time_end:
@@ -62,3 +64,5 @@ for pitch in timeslots_dict:
         available+=1
 if available==0:
     print'No pitches available for selected date and time.'
+
+print time()-start_time
