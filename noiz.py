@@ -7,9 +7,11 @@ check_date = '2016-06-29'
 check_time_start = '1900'
 check_time_end = '2000'
 
+print 'Zionsposrts.'
 start_time=time.time()
 url = "http://www.zionsports.com.sg/booking/index.php?%s"
 
+available_pitches=0
 for pitch in (1, 2):
     params = urllib.urlencode({
         "option": "com_rsappt_pro2",
@@ -81,10 +83,12 @@ for pitch in (1, 2):
         #     print timeslots_dict[t]['timeslot'] + ': unavailable'
         # else:
         #     print timeslots_dict[t]['timeslot'] + ': available'
-    if availability_check>0:
-        print 'Pitch %s unavailable.' %(pitch)
-    else:
-        print 'Pitch %s available.' %(pitch)
 
+    if availability_check==0:
+        print 'Pitch %s available.' %(pitch)
+        available_pitches+=1
+
+if available_pitches==0:
+    print 'No pitches available for selected date and time.'
 
 print time.time()-start_time

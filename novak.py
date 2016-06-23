@@ -8,7 +8,7 @@ check_date = '2016-06-28'
 check_time_start = '0900'
 check_time_end = '1500'
 
-
+print 'Kovansports.'
 start_time = time()
 s = requests.Session()
 

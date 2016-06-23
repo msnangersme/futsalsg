@@ -6,8 +6,10 @@ check_date = '2016-06-28'
 check_time_start = '0900'
 check_time_end = '1500'
 
+print 'Offside.'
 start_time= time.time()
 
+available_pitches=0
 for pitch in (1, 2, 3, 4):
     s = requests.Session()
 
@@ -57,9 +59,12 @@ for pitch in (1, 2, 3, 4):
             if int(hour[:2]+hour[-2:]) in check_list:
                 available_slots.append(int(hour[:2]+hour[-2:]))
 
+
     if sorted(available_slots) == check_list:
         print 'Pitch %s available.' %(pitch)
-    else:
-        print 'Pitch %s unavailable.' %(pitch)
+        available_pitches+=1
+
+if available_pitches==0:
+    print 'No pitches available for selected date and time.'
 
 print time.time()-start_time
