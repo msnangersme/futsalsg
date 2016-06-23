@@ -2,49 +2,63 @@ import requests
 from pprint import pprint
 from bs4 import BeautifulSoup
 
-if __name__ == '__main__':
-    s = requests.Session()
+s = requests.Session()
 
-    USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
-    ## offside
-    req_headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        # 'Content-Length':29,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': USER_AGENT,
-        'Host': 'www.kovansports.com',
-        'Origin': 'www.kovansports.com',
-        'Pragma': 'no-cache',
-        'Referer': 'http://www.kovansports.com/bookonline/',
-        'Upgrade-Insecure-Requests': 1
-    }
-
-
-    req_data = {
-        'date': '29-Jun-16',
-        'load_schedule': 1
-    }
-
-    req_url = 'http://www.kovansports.com/bookonline/'
-
-    resp = s.post(req_url, data=req_data, headers=req_headers)
-    resp.raise_for_status()
-
-    soup = BeautifulSoup(resp.text, 'html.parser')
-
-    timeslots = soup.findAll("input", {"class":"slotcheckbox"})
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+## offside
+req_headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'en-US,en;q=0.8',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    # 'Content-Length':29,
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'User-Agent': USER_AGENT,
+    'Host': 'www.kovansports.com',
+    'Origin': 'www.kovansports.com',
+    'Pragma': 'no-cache',
+    'Referer': 'http://www.kovansports.com/bookonline/',
+    'Upgrade-Insecure-Requests': 1
+}
 
 
-    time_start = 1800
-    time_end = 2200
-    print 'available slots-'
-    for t in timeslots:
-        pitch = int(t['value'][-1:])
-        timeslot = int(t['value'][-6:-2])
-        if timeslot>=time_start and timeslot<time_end:
+req_data = {
+    'date': '28-Jun-16',            #select date
+    'load_schedule': 1
+}
 
-            print 'kovansports pitch ' + t['value'][-1:] + ' ; time: '+ t['value'][-6:-2]
+req_url = 'http://www.kovansports.com/bookonline/'
+
+resp = s.post(req_url, data=req_data, headers=req_headers)
+resp.raise_for_status()
+
+soup = BeautifulSoup(resp.text, 'html.parser')
+
+timeslots = soup.findAll("input", {"class":"slotcheckbox"})
+
+time_start = 1900   #filter results based on start time
+time_end = 2200     #filter results based on end time
+check_list = []
+a=time_start
+while a<time_end:
+    check_list.append(a)
+    a+=100
+
+timeslots_dict = {}
+for t in timeslots:
+    pitch = int(t['value'][-1:])
+    timeslot = int(t['value'][-6:-2])
+    if timeslot>=time_start and timeslot<time_end:
+        if pitch in timeslots_dict:
+            timeslots_dict[pitch].append(timeslot)
+        else:
+            timeslots_dict[pitch] = [timeslot]
+
+available=0
+for pitch in timeslots_dict:
+    if timeslots_dict[pitch] == check_list:
+        print 'Pitch %s available.' %(pitch)
+        available+=1
+if available==0:
+    print'No pitches available for selected date and time.'
