@@ -2,6 +2,12 @@ import requests
 from pprint import pprint
 from bs4 import BeautifulSoup
 from time import time
+from datetime import datetime
+
+check_date = '2016-06-28'
+check_time_start = '0900'
+check_time_end = '1500'
+
 
 start_time = time()
 s = requests.Session()
@@ -26,7 +32,7 @@ req_headers = {
 
 
 req_data = {
-    'date': '28-Jun-16',            #select date
+    'date': datetime.strptime(check_date, '%Y-%m-%d').strftime("%d-%b-%y"),
     'load_schedule': 1
 }
 
@@ -39,8 +45,8 @@ soup = BeautifulSoup(resp.text, 'html.parser')
 
 timeslots = soup.findAll("input", {"class":"slotcheckbox"})
 
-time_start = 900   #filter results based on start time- must be integer- without leading 0
-time_end = 1200     #filter results based on end time- must be integer- without leading 0
+time_start = int(check_time_start)   #filter results based on start time- must be integer- without leading 0
+time_end = int(check_time_end)     #filter results based on end time- must be integer- without leading 0
 check_list = []
 a=time_start
 while a<time_end:
