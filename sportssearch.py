@@ -2,6 +2,8 @@ from edisffo import get_offside_availability
 from noiz import get_zionsports_availability
 from novak import get_kovansports_availability
 from egacgnallak import get_kallangcage_availability
+from egachamittb import get_bttimahcage_availability
+from afyh import get_hyfa_availability
 from time import time
 import multiprocessing as mp
 from datetime import datetime, timedelta
@@ -30,11 +32,12 @@ if __name__ == '__main__':
     kovan = pool.apply_async(get_kovansports_availability, args=(check_date, check_time_start, check_time_end))
     zion = pool.apply_async(get_zionsports_availability, args=(check_date, check_time_start, check_time_end))
     kallang = pool.apply_async(get_kallangcage_availability, args=(check_date, check_time_start, check_time_end))
-
+    bttimah = pool.apply_async(get_bttimahcage_availability, args=(check_date, check_time_start, check_time_end))
+    hyfa = pool.apply_async(get_hyfa_availability, args=(check_date, check_time_start, check_time_end))
     pool.close()
     pool.join()
 
-    final= offside.get() + kovan.get() + zion.get() + kallang.get()
+    final= offside.get() + kovan.get() + zion.get() + kallang.get() + bttimah.get() + hyfa.get()
 
 # offside = get_offside_availability(check_date, check_time_start, check_time_end)
 # kovan = get_kovansports_availability(check_date, check_time_start, check_time_end)

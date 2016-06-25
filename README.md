@@ -1,5 +1,7 @@
 # test_repo
 
+This script searches futsal facilities in Singapore for a given date and time and returns the available pitches.
+
 From terminal,
 1. cd to desired directory
 2. $git clone "https://github.com/aaronteoh/test_repo.git"
@@ -15,8 +17,11 @@ From terminal,
     To search on 1 Jan 2017 from 5pm to 7pm,
         $python /Users/intern/Documents/test_repo/sportsearch.py 2016-01-01 17:00 19:00
 
+
 Currently searches:
+Bt Timah- The Cage
+MacPherson- HYFA
 Kallang- The Cage
 Kovan- Kovan Sports Centre
 Thomson- Offside
-Zion- Zion Sports Club
+Zion Rd- Zion Sports Club
