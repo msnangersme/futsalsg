@@ -18,12 +18,13 @@ This script searches futsal facilities in Singapore for a given date and time an
             $python /Users/intern/Documents/test_repo/sportsearch.py 2016-01-01 17:00 19:00
 
 
-Currently searches:
-Bt Timah- The Cage
-MacPherson- HYFA
-Kallang- The Cage
-Kovan- Kovan Sports Centre
-Thomson- Offside
-Zion Rd- Zion Sports Club
+Currently searches:  
+Bt Timah- The Cage  
+MacPherson- HYFA  
+Kallang- The Cage  
+Kovan- Kovan Sports Centre  
+Thomson- Offside  
+Zion Rd- Zion Sports Club  
+  
 
 ![Screenshot](Screen%20Shot%202016-06-25%20at%2011.23.01%20PM.png?raw=true "Screenshot")
