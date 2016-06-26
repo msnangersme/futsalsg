@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     concurrent_processes = mp.cpu_count()
     pool = mp.Pool(processes=concurrent_processes)
-    offside = pool.apply_async(get_offside_availability, args=(check_date, check_time_start, check_time_end))
+    offside = pool.apply_async(get_offside_availability, args=(check_date, check_time_start, check_time_end))       #
     kovan = pool.apply_async(get_kovansports_availability, args=(check_date, check_time_start, check_time_end))     #
     zion = pool.apply_async(get_zionsports_availability, args=(check_date, check_time_start, check_time_end))       #
     kallang = pool.apply_async(get_kallangcage_availability, args=(check_date, check_time_start, check_time_end))   #
@@ -38,7 +38,6 @@ if __name__ == '__main__':
     pool.join()
 
     final= offside.get() + kovan.get() + zion.get() + kallang.get() + bttimah.get() + hyfa.get()
-
 
     for i in sorted(final):
         print i
