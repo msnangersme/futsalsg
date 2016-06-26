@@ -1,11 +1,11 @@
 # test_repo
-
+# work in progress 
 This script searches futsal facilities in Singapore for a given date and time and returns the available pitches.
 
     From terminal,
     1. cd to desired directory
-    2. $git clone "https://github.com/aaronteoh/test_repo.git"
-    3. $pip install bs4
+    2. $git clone "https://github.com/aaronteoh/futsalsg.git"
+    3. $pip install beautifulsoup4
     4. $python *desired directory*/test_repo/sportssearch.py YYYY-MM-DD HH:MM HH:MM
 
         selected date, start time (24hr clock), end time (24hr clock)

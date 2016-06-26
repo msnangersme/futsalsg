@@ -1,36 +1,58 @@
-import urllib
-from pprint import pprint
+import requests
 from bs4 import BeautifulSoup
-
+from pprint import pprint
 
 def get_zionsports_availability(check_date, check_time_start, check_time_end):
-    url = "http://www.zionsports.com.sg/booking/index.php?%s"
-    available_pitches=0
+
     availability = []
-    for pitch in (1, 2):
-        params = urllib.urlencode({
-            "option": "com_rsappt_pro2",
-            "controller": "ajax",
-            "task": "ajax_gad2",
-            "format": "ajax",
-            "gridstarttime": check_time_start,
-            "gridendtime": check_time_end,
-            "category": str(pitch),    #pitch number (1 or 2)
-            "mode": "single_day",
-            "resource": "0",
-            "grid_date": check_date,
-            "grid_days": "1",
-            "gridwidth": "650px",
-            "namewidth": "100px",
-            "reg": "No",
-            "browser":"Chrome",
 
+    check_list=[]
+    a=int(check_time_start.translate(None, ':'))
+    while a<int(check_time_end.translate(None, ':')):
+        check_list.append(a)
+        a+=100
 
-        })
-        # print url%params
-        response = urllib.urlopen(url % params).read()
-        soup = BeautifulSoup(response, 'html.parser')
-        # pprint(soup.find_all("div"))
+    s = requests.Session()
+    USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+
+    req_headers = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, sdch',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Host': 'www.zionsports.com.sg',
+        'Pragma': 'no-cache',
+        'Referer': 'http://www.zionsports.com.sg/booking',
+        'User-Agent': USER_AGENT
+
+    }
+
+    for pitch in (1,2):
+        req_data = {
+            'option': 'com_rsappt_pro2',
+            'controller': 'ajax',
+            'task': 'ajax_gad2',
+            'format': 'raw',
+            'gridstarttime': check_time_start,
+            'gridendtime': check_time_end,
+            'category': pitch,      #pitch num
+            'mode': 'single_day',
+            'resource': 0,
+            'grid_date': check_date,
+            'grid_days': 7,
+            'gridwidth': '650px',
+            'namewidth': '100px',
+            'reg': 'No',
+            'browser': 'Chrome'
+        }
+
+        req_url = "http://www.zionsports.com.sg/booking/index.php?%s"
+
+        resp = s.get(req_url, params=req_data, headers=req_headers)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
+
         timeslots = soup.findAll("div", {"class":"sv_gad_timeslot_available"})
         unavailable = soup.findAll("div", {"class": ["sv_gad_timeslot_booked","sv_gad_timeslot_book-off"]})
 
@@ -63,7 +85,6 @@ def get_zionsports_availability(check_date, check_time_start, check_time_end):
         for t in timeslots_dict:
             t_col = timeslots_dict[t]['left']
             t_start = timeslots_dict[t]['top']
-            counter=0
 
             for b in unavailable_dict:
                 col= unavailable_dict[b]['left']
@@ -71,18 +92,17 @@ def get_zionsports_availability(check_date, check_time_start, check_time_end):
                 end= unavailable_dict[b]['top']+unavailable_dict[b]['height']
 
                 if t_col == col and t_start>=start and t_start<=end:
-                    counter+=1
                     availability_check+=1
-
-            # if counter>0:
-            #     print timeslots_dict[t]['timeslot'] + ': unavailable'
-            # else:
-            #     print timeslots_dict[t]['timeslot'] + ': available'
 
         if availability_check==0:
             availability.append('Zionsports pitch %s' %(pitch))
-            available_pitches+=1
-    return availability
-    # if available_pitches==0:
-    #     print 'No pitches available for selected date and time.'
 
+    return availability
+
+
+if __name__ == '__main__':
+    check_date = '2016-06-28'
+    check_time_start = '20:00'
+    check_time_end = '21:00'
+
+    print get_zionsports_availability(check_date, check_time_start, check_time_end)
