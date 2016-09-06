@@ -10,6 +10,10 @@ from datetime import datetime, timedelta
 from pytz import timezone
 import sys
 
+def print0(val):
+    if val and len(val):
+        for v in val:
+            print("{0}".format(v))
 
 if __name__ == '__main__':
 
@@ -28,20 +32,15 @@ if __name__ == '__main__':
 
     concurrent_processes = mp.cpu_count()
     pool = mp.Pool(processes=concurrent_processes)
-    offside = pool.apply_async(get_offside_availability, args=(check_date, check_time_start, check_time_end))       #
-    kovan = pool.apply_async(get_kovansports_availability, args=(check_date, check_time_start, check_time_end))     #
-    zion = pool.apply_async(get_zionsports_availability, args=(check_date, check_time_start, check_time_end))       #
-    kallang = pool.apply_async(get_kallangcage_availability, args=(check_date, check_time_start, check_time_end))   #
-    bttimah = pool.apply_async(get_bttimahcage_availability, args=(check_date, check_time_start, check_time_end))   #
-    hyfa = pool.apply_async(get_hyfa_availability, args=(check_date, check_time_start, check_time_end))
+
+    [pool.apply_async(get_offside_availability, args=(check_date, check_time_start, check_time_end), callback=print0)    ,
+    pool.apply_async(get_kovansports_availability, args=(check_date, check_time_start, check_time_end), callback=print0) ,
+    pool.apply_async(get_zionsports_availability, args=(check_date, check_time_start, check_time_end), callback=print0)  ,
+    pool.apply_async(get_kallangcage_availability, args=(check_date, check_time_start, check_time_end), callback=print0) ,
+    pool.apply_async(get_bttimahcage_availability, args=(check_date, check_time_start, check_time_end), callback=print0) ,
+    pool.apply_async(get_hyfa_availability, args=(check_date, check_time_start, check_time_end), callback=print0),
+    ]
     pool.close()
     pool.join()
-
-    final= offside.get() + kovan.get() + zion.get() + kallang.get() + bttimah.get() + hyfa.get()
-
-    for i in sorted(final):
-        print i
-    if final == []:
-        print 'No available pitches found.'
 
     print '%.2f sec.' %(time()-start)
