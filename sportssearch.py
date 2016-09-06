@@ -34,7 +34,8 @@ class timeslots(object):
             check_time_start = sys.argv[2]
             check_time_end = sys.argv[3]
 
-        concurrent_processes = mp.cpu_count()
+        # concurrent_processes = mp.cpu_count()
+        concurrent_processes = 10
         pool = mp.Pool(processes=concurrent_processes)
 
         [pool.apply_async(get_offside_availability, args=(check_date, check_time_start, check_time_end), callback=self.print0)    ,
